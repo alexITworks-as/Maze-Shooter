@@ -108,6 +108,43 @@ canvas { display:block; }
 
 #end-overlay { display:none; }
 
+/* ── Rotate prompt ───────────────────────────────────────── */
+#rotate-prompt {
+  display: none;
+  position: fixed; inset: 0; z-index: 9999;
+  background: #0a0a12;
+  align-items: center; justify-content: center;
+  pointer-events: all;
+}
+#rotate-prompt.show { display: flex; }
+
+#rotate-inner {
+  text-align: center;
+}
+
+#rotate-icon {
+  font-size: 72px;
+  animation: rotate-anim 1.4s ease-in-out infinite;
+  display: block;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 18px rgba(255,170,0,.6));
+}
+
+@keyframes rotate-anim {
+  0%   { transform: rotate(0deg); }
+  40%  { transform: rotate(90deg); }
+  60%  { transform: rotate(90deg); }
+  100% { transform: rotate(90deg) scale(1.08); opacity:.7; }
+}
+
+#rotate-text {
+  font-family: 'Courier New', monospace;
+  font-size: 20px;
+  color: #fa0;
+  text-shadow: 0 0 14px #fa08;
+  line-height: 1.6;
+}
+
 /* ── Mobile touch controls ───────────────────────────────── */
 #mobile-controls {
   position: absolute; inset: 0;
