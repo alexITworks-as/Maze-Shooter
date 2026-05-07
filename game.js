@@ -75,6 +75,26 @@ function isTouchDevice() {
   return navigator.maxTouchPoints > 0 && window.matchMedia('(pointer: coarse)').matches;
 }
 
+// ─── ORIENTATION LOCK ─────────────────────────────────────
+function checkOrientation() {
+  if (!isTouchDevice()) return;
+  const portrait = window.innerHeight > window.innerWidth;
+  document.getElementById('rotate-prompt').classList.toggle('show', portrait);
+}
+
+function initOrientationLock() {
+  if (!isTouchDevice()) return;
+  checkOrientation();
+  window.addEventListener('resize', checkOrientation);
+  window.addEventListener('orientationchange', checkOrientation);
+  // Request landscape lock (supported in Chrome Android, ignored elsewhere)
+  try {
+    screen.orientation.lock('landscape').catch(() => {});
+  } catch (_) {}
+}
+
+initOrientationLock();
+
 // ─── MOBILE CONTROLS SETUP ───────────────────────────────
 function setupMobileControls() {
   if (!isTouchDevice() || mobileReady) return;
