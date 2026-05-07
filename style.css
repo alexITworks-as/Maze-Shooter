@@ -107,3 +107,99 @@ canvas { display:block; }
 .btn:hover { background:#a85e00; }
 
 #end-overlay { display:none; }
+
+/* ── Mobile touch controls ───────────────────────────────── */
+#mobile-controls {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+
+#joy-zone {
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 45%; height: 50%;
+  pointer-events: all;
+}
+
+#look-zone {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 55%; height: 55%;
+  pointer-events: all;
+}
+
+#joy-base {
+  position: absolute;
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  border: 2px solid rgba(255,255,255,.3);
+  display: none;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+#joy-stick {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: rgba(255,200,0,.55);
+  border: 2px solid rgba(255,200,0,.8);
+  transform: translate(-50%, -50%);
+  transition: none;
+}
+
+/* Action buttons in the look zone */
+.m-btn {
+  position: absolute;
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.35);
+  background: rgba(0,0,0,.55);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  pointer-events: all;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  display: flex; align-items: center; justify-content: center;
+  font-family: inherit;
+  transition: background .1s;
+}
+.m-btn:active { background: rgba(255,200,0,.35); }
+
+#btn-reload-m { bottom: 28px; right: 28px; }
+#btn-sprint-m { bottom: 100px; right: 28px; font-size: 16px; }
+#btn-sprint-m.active { background: rgba(255,200,0,.5); color:#000; border-color:#fa0; }
+
+/* Tap-to-shoot ripple hint */
+#look-zone::after {
+  content: '👆 тап = постріл';
+  position: absolute;
+  top: 14px; right: 14px;
+  font-size: 10px; color: rgba(255,255,255,.25);
+  pointer-events: none;
+}
+
+/* ── Responsive HUD for small screens ───────────────────── */
+@media (max-width: 600px) {
+  #hud { top: 6px; left: 6px; right: 6px; gap: 5px; }
+  .panel { padding: 5px 8px; font-size: 11px; }
+  #hp-bar-wrap { width: 90px; }
+  #tasks-panel { left: 6px; top: 64px; width: 175px; font-size: 11px; }
+  #minimap { bottom: 8px; right: 8px; }
+  #mm { width: 120px !important; height: 120px !important; }
+  #mm-legend { bottom: 136px; right: 8px; font-size: 9px; }
+  .screen { padding: 18px 14px; }
+  .screen h1 { font-size: 20px; }
+  .lv-grid { grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .lv-card { padding: 10px 6px; }
+  .lv-card h2 { font-size: 20px; }
+  .lv-info { font-size: 9px; }
+}
+
+@media (max-width: 400px) {
+  .lv-info { display: none; }
+  .lv-card { padding: 8px 4px; }
+}
