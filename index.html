@@ -2,6 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Maze Shooter 3D</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -72,12 +73,20 @@
         </div>
       </div>
 
-      <div class="cg">
+      <div class="cg" id="kb-controls">
         <div><span class="k">W A S D</span> — рух</div>
         <div><span class="k">Миша</span> — огляд</div>
         <div><span class="k">ЛКМ / Пробіл</span> — стріляти</div>
         <div><span class="k">R</span> — перезарядити</div>
         <div><span class="k">Shift</span> — бігти швидше</div>
+        <div><span class="k">Мінікарта</span> — внизу праворуч</div>
+      </div>
+      <div class="cg" id="touch-controls-hint" style="display:none">
+        <div><span class="k">Ліво</span> — джойстик руху</div>
+        <div><span class="k">Право</span> — огляд / тап = стріл</div>
+        <div><span class="k">🔄</span> — перезарядити</div>
+        <div><span class="k">⚡</span> — спринт (перемик.)</div>
+        <div><span class="k">Геймпад</span> — підтримується</div>
         <div><span class="k">Мінікарта</span> — внизу праворуч</div>
       </div>
     </div>
@@ -92,6 +101,16 @@
       <p id="end-tasks" style="font-size:12px;color:#555;margin-bottom:16px"></p>
       <button class="btn" onclick="location.reload()">🔄 Вибрати рівень</button>
     </div>
+  </div>
+
+  <!-- Mobile touch controls (shown only on touch devices via JS) -->
+  <div id="mobile-controls" style="display:none">
+    <div id="joy-zone"></div>
+    <div id="look-zone">
+      <button id="btn-reload-m" class="m-btn">🔄</button>
+      <button id="btn-sprint-m" class="m-btn">⚡</button>
+    </div>
+    <div id="joy-base"><div id="joy-stick"></div></div>
   </div>
 
 </div><!-- #ui -->
