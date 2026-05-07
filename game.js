@@ -61,6 +61,150 @@ let tasks = [], taskIdx = 0, tasksDone = 0;
 let killStamps = [];
 let bossKilled = false;
 
+// ─── TOUCH INPUT STATE ────────────────────────────────────
+const tInput = { jx: 0, jy: 0, sprint: false };
+let joyId = -1, joyBase = { x: 0, y: 0 };
+let lookId = -1, lookPrev = { x: 0, y: 0 };
+let lookTapStart = 0, lookTapX = 0, lookTapY = 0;
+let mobileReady = false;
+
+// ─── GAMEPAD INPUT STATE ──────────────────────────────────
+const gpInput = { lx: 0, ly: 0, sprint: false, fireHeld: false, rtHeld: false, reloadHeld: false };
+
+function isTouchDevice() {
+  return navigator.maxTouchPoints > 0 && window.matchMedia('(pointer: coarse)').matches;
+}
+
+// ─── MOBILE CONTROLS SETUP ───────────────────────────────
+function setupMobileControls() {
+  if (!isTouchDevice() || mobileReady) return;
+  mobileReady = true;
+
+  document.getElementById('mobile-controls').style.display = 'block';
+  document.getElementById('touch-controls-hint').style.display = 'grid';
+  document.getElementById('kb-controls').style.display = 'none';
+
+  const joyZone  = document.getElementById('joy-zone');
+  const lookZone = document.getElementById('look-zone');
+  const joyBaseEl = document.getElementById('joy-base');
+  const joyStick  = document.getElementById('joy-stick');
+  const btnReload = document.getElementById('btn-reload-m');
+  const btnSprint = document.getElementById('btn-sprint-m');
+
+  const JOY_R = 40;
+
+  joyZone.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    joyId = t.identifier;
+    joyBase = { x: t.clientX, y: t.clientY };
+    joyBaseEl.style.display = 'block';
+    joyBaseEl.style.left = t.clientX + 'px';
+    joyBaseEl.style.top  = t.clientY + 'px';
+    joyStick.style.transform = 'translate(-50%,-50%)';
+  }, { passive: false });
+
+  joyZone.addEventListener('touchmove', e => {
+    e.preventDefault();
+    for (const t of e.changedTouches) {
+      if (t.identifier !== joyId) continue;
+      const dx = t.clientX - joyBase.x;
+      const dy = t.clientY - joyBase.y;
+      const dist = Math.hypot(dx, dy);
+      const nx = dist > JOY_R ? dx / dist * JOY_R : dx;
+      const ny = dist > JOY_R ? dy / dist * JOY_R : dy;
+      joyStick.style.transform = `translate(calc(-50% + ${nx}px), calc(-50% + ${ny}px))`;
+      tInput.jx = nx / JOY_R;
+      tInput.jy = ny / JOY_R;
+    }
+  }, { passive: false });
+
+  const endJoy = e => {
+    for (const t of e.changedTouches) {
+      if (t.identifier !== joyId) continue;
+      joyId = -1; tInput.jx = 0; tInput.jy = 0;
+      joyBaseEl.style.display = 'none';
+      joyStick.style.transform = 'translate(-50%,-50%)';
+    }
+  };
+  joyZone.addEventListener('touchend',    endJoy, { passive: false });
+  joyZone.addEventListener('touchcancel', endJoy, { passive: false });
+
+  lookZone.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    if (lookId !== -1) return;
+    lookId = t.identifier;
+    lookPrev    = { x: t.clientX, y: t.clientY };
+    lookTapStart = Date.now();
+    lookTapX = t.clientX; lookTapY = t.clientY;
+  }, { passive: false });
+
+  lookZone.addEventListener('touchmove', e => {
+    e.preventDefault();
+    for (const t of e.changedTouches) {
+      if (t.identifier !== lookId) continue;
+      mdx += (t.clientX - lookPrev.x) * 1.4;
+      mdy += (t.clientY - lookPrev.y) * 1.4;
+      lookPrev = { x: t.clientX, y: t.clientY };
+    }
+  }, { passive: false });
+
+  const endLook = e => {
+    for (const t of e.changedTouches) {
+      if (t.identifier !== lookId) continue;
+      lookId = -1;
+      const moved = Math.hypot(t.clientX - lookTapX, t.clientY - lookTapY);
+      if (moved < 14 && Date.now() - lookTapStart < 220) shoot();
+    }
+  };
+  lookZone.addEventListener('touchend',    endLook, { passive: false });
+  lookZone.addEventListener('touchcancel', endLook, { passive: false });
+
+  btnReload.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if (running && !over) { ammo = lvCfg.AMMO; updateAmmo(); }
+  }, { passive: false });
+
+  btnSprint.addEventListener('touchstart', e => {
+    e.preventDefault();
+    tInput.sprint = !tInput.sprint;
+    btnSprint.classList.toggle('active', tInput.sprint);
+  }, { passive: false });
+}
+
+// ─── GAMEPAD POLLING ─────────────────────────────────────
+function pollGamepad() {
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  let found = false;
+  for (const gp of pads) {
+    if (!gp) continue;
+    found = true;
+    const DEAD = 0.15;
+    gpInput.lx = Math.abs(gp.axes[0]) > DEAD ? gp.axes[0] : 0;
+    gpInput.ly = Math.abs(gp.axes[1]) > DEAD ? gp.axes[1] : 0;
+    const rx = Math.abs(gp.axes[2]) > DEAD ? gp.axes[2] : 0;
+    const ry = Math.abs(gp.axes[3]) > DEAD ? gp.axes[3] : 0;
+    mdx += rx * 7;
+    mdy += ry * 7;
+
+    // Fire: button 0 (A/Cross) or right trigger (button 7)
+    const firePr = gp.buttons[0]?.pressed || (gp.buttons[7]?.value ?? 0) > 0.5;
+    if (firePr && !gpInput.fireHeld) { shoot(); }
+    gpInput.fireHeld = firePr;
+
+    // Reload: button 2 (X/Square) or button 3
+    const reloadPr = gp.buttons[2]?.pressed || gp.buttons[3]?.pressed;
+    if (reloadPr && !gpInput.reloadHeld && running && !over) { ammo = lvCfg.AMMO; updateAmmo(); }
+    gpInput.reloadHeld = reloadPr;
+
+    // Sprint: left trigger (button 6) or left bumper (button 4)
+    gpInput.sprint = (gp.buttons[6]?.value ?? 0) > 0.3 || gp.buttons[4]?.pressed || false;
+    break;
+  }
+  if (!found) { gpInput.lx = 0; gpInput.ly = 0; gpInput.sprint = false; }
+}
+
 // ─── MAZE GEN (recursive backtracker) ────────────────────
 function genMaze(R, C) {
   const g = Array.from({ length: R }, () => new Array(C).fill(1));
@@ -535,15 +679,24 @@ function hurtPlayer(dmg) {
 }
 
 function movePlayer(dt) {
-  const spd = (keys.ShiftLeft || keys.ShiftRight ? 7 : 4.2) * dt;
+  const sprint = keys.ShiftLeft || keys.ShiftRight || tInput.sprint || gpInput.sprint;
+  const spd = (sprint ? 7 : 4.2) * dt;
   let mx = 0, mz = 0;
   if (keys.KeyW || keys.ArrowUp)    mz = -1;
   if (keys.KeyS || keys.ArrowDown)  mz =  1;
   if (keys.KeyA || keys.ArrowLeft)  mx = -1;
   if (keys.KeyD || keys.ArrowRight) mx =  1;
 
+  // Touch joystick
+  mx += tInput.jx;
+  mz += tInput.jy;
+  // Gamepad left stick
+  mx += gpInput.lx;
+  mz += gpInput.ly;
+
   if (mx || mz) {
-    const len = Math.hypot(mx, mz); mx /= len; mz /= len;
+    const len = Math.hypot(mx, mz);
+    mx /= len; mz /= len;
     const cos = Math.cos(yaw), sin = Math.sin(yaw);
     slideMove(cam.position, (cos * mx + sin * mz) * spd, (-sin * mx + cos * mz) * spd, 0.32);
   }
@@ -665,6 +818,7 @@ function loop(now) {
   const dt = Math.min((now - prev) / 1000, 0.05); prev = now;
 
   if (running && !over) {
+    pollGamepad();
     movePlayer(dt);
     updateEnemies(dt);
     updateSpeedKillUI();
@@ -714,10 +868,15 @@ function startGame(level) {
   updateHUD();
 
   startTime = Date.now();
-  document.body.addEventListener('click', () => {
-    if (running && !over && !document.pointerLockElement) document.body.requestPointerLock();
-  });
-  document.body.requestPointerLock();
+  setupMobileControls();
+
+  if (!isTouchDevice()) {
+    document.body.addEventListener('click', () => {
+      if (running && !over && !document.pointerLockElement) document.body.requestPointerLock();
+    });
+    document.body.requestPointerLock();
+  }
+
   running = true;
   requestAnimationFrame(loop);
 }
