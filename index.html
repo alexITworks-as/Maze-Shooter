@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Maze Shooter 3D</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="ui">
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="panel">
+      HP: <strong id="hp-val">100</strong>
+      <div id="hp-bar-wrap"><div id="hp-bar" style="width:100%"></div></div>
+    </div>
+    <div class="panel" style="text-align:center;min-width:160px">
+      <div id="lv-badge" style="font-size:11px;color:#666;margin-bottom:2px"></div>
+      <strong id="obj-text" style="font-size:13px;color:#fa0">⚔ Знищ ворогів!</strong><br>
+      <span style="font-size:11px;color:#888">Вороги: <span id="ec">?</span> &nbsp;|&nbsp; Вбито: <span id="kc">0</span></span>
+    </div>
+    <div class="panel" style="text-align:right">
+      🔫 <strong id="ammo-val">— / ∞</strong><br>
+      <span style="font-size:11px;color:#666">[R] перезарядка</span>
+    </div>
+  </div>
+
+  <!-- Tasks -->
+  <div id="tasks-panel">
+    <h3>📋 Завдання</h3>
+    <div id="tasks-list"></div>
+  </div>
+
+  <!-- Speed-kill bar -->
+  <div id="speed-wrap">
+    <div id="speed-label">⚡</div>
+    <div id="speed-track"><div id="speed-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="xhair"></div>
+  <div id="dmg"></div>
+  <div id="pop"></div>
+
+  <div id="minimap">
+    <canvas id="mm" width="170" height="170"></canvas>
+  </div>
+  <div id="mm-legend">⬜ Ти &nbsp;🟥 Вороги &nbsp;🟩 Вихід</div>
+
+  <!-- Start / Level select -->
+  <div class="overlay" id="start-overlay">
+    <div class="screen">
+      <h1>⚔ MAZE SHOOTER 3D</h1>
+      <p style="color:#888;font-size:13px;margin-bottom:4px">Знищ ворогів — виконай завдання — знайди вихід</p>
+      <div class="goal">🎯 Виконай усі завдання рівня, потім знайди <strong style="color:#0f8">зелений портал</strong></div>
+
+      <div class="lv-grid">
+        <div class="lv-card lv-1" onclick="startGame(1)">
+          <h2>1</h2>
+          <div class="lv-name">Легкий</div>
+          <div class="lv-info">🗺 Малий лабіринт<br>👾 6 ворогів<br>❤ 150 HP<br>📋 3 завдання<br>💡 Яскраво</div>
+        </div>
+        <div class="lv-card lv-2" onclick="startGame(2)">
+          <h2>2</h2>
+          <div class="lv-name">Середній</div>
+          <div class="lv-info">🗺 Середній лабіринт<br>👾 11 + Ватажок 👑<br>❤ 100 HP<br>📋 5 завдань<br>🌫 Туман</div>
+        </div>
+        <div class="lv-card lv-3" onclick="startGame(3)">
+          <h2>3</h2>
+          <div class="lv-name">Важкий</div>
+          <div class="lv-info">🗺 Великий лабіринт<br>👾 17 + Бос 💀<br>❤ 75 HP<br>📋 5 завдань<br>🌑 Темрява</div>
+        </div>
+      </div>
+
+      <div class="cg">
+        <div><span class="k">W A S D</span> — рух</div>
+        <div><span class="k">Миша</span> — огляд</div>
+        <div><span class="k">ЛКМ / Пробіл</span> — стріляти</div>
+        <div><span class="k">R</span> — перезарядити</div>
+        <div><span class="k">Shift</span> — бігти швидше</div>
+        <div><span class="k">Мінікарта</span> — внизу праворуч</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End screen -->
+  <div class="overlay" id="end-overlay">
+    <div class="screen">
+      <h1 id="end-title"></h1>
+      <p id="end-sub"   style="font-size:16px;margin:10px 0 4px"></p>
+      <p id="end-stats" style="font-size:13px;color:#777;margin-bottom:3px"></p>
+      <p id="end-tasks" style="font-size:12px;color:#555;margin-bottom:16px"></p>
+      <button class="btn" onclick="location.reload()">🔄 Вибрати рівень</button>
+    </div>
+  </div>
+
+</div><!-- #ui -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

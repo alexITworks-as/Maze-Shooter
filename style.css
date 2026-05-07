@@ -1,0 +1,109 @@
+* { margin:0; padding:0; box-sizing:border-box; }
+body { overflow:hidden; background:#000; font-family:'Courier New',monospace; }
+canvas { display:block; }
+#ui { position:fixed; inset:0; pointer-events:none; }
+
+/* ── HUD top ─────────────────────────────────────────────── */
+#hud {
+  position:absolute; top:12px; left:12px; right:12px;
+  display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+}
+.panel {
+  background:rgba(0,0,0,.72); border:1px solid #445;
+  padding:8px 14px; border-radius:6px; color:#ccc; font-size:13px;
+}
+#hp-bar-wrap { width:130px; height:7px; background:#222; border-radius:3px; margin-top:5px; }
+#hp-bar      { height:100%; background:#0f0; border-radius:3px; transition:width .12s,background .12s; }
+
+/* ── Tasks panel ─────────────────────────────────────────── */
+#tasks-panel {
+  position:absolute; left:12px; top:80px; width:230px;
+  background:rgba(0,0,0,.75); border:1px solid #445;
+  border-radius:6px; padding:10px 12px;
+}
+#tasks-panel h3 {
+  font-size:11px; color:#666; margin-bottom:8px;
+  letter-spacing:1px; text-transform:uppercase;
+}
+.task-item  { display:flex; align-items:flex-start; gap:6px; font-size:12px; line-height:1.5; margin-bottom:5px; }
+.task-icon  { flex-shrink:0; width:16px; font-size:13px; }
+.task-item.active .task-text { color:#fa0; font-weight:bold; }
+.task-item.done   .task-text { color:#4a8; text-decoration:line-through; }
+.task-item.locked .task-text { color:#333; }
+
+/* ── Speed-kill bar ──────────────────────────────────────── */
+#speed-wrap {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%) translateY(80px);
+  display:none; text-align:center;
+}
+#speed-label { font-size:13px; color:#fa0; margin-bottom:4px; }
+#speed-track { width:220px; height:7px; background:#222; border-radius:3px; margin:0 auto; }
+#speed-fill  { height:100%; background:#fa0; border-radius:3px; transition:width .1s; }
+
+/* ── Crosshair ───────────────────────────────────────────── */
+#xhair { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+#xhair::before,
+#xhair::after  { content:''; position:absolute; background:rgba(255,255,255,.85); }
+#xhair::before { width:2px; height:20px; top:-10px; left:-1px; }
+#xhair::after  { width:20px; height:2px; top:-1px; left:-10px; }
+
+/* ── Minimap ─────────────────────────────────────────────── */
+#minimap   { position:absolute; bottom:14px; right:14px; border:1px solid #445; border-radius:5px; overflow:hidden; }
+#mm-legend { position:absolute; bottom:182px; right:14px; font-size:10px; color:#666; text-align:right; }
+
+/* ── Damage flash ────────────────────────────────────────── */
+#dmg { position:absolute; inset:0; background:#f00; opacity:0; pointer-events:none; transition:opacity .08s; }
+
+/* ── Pop message ─────────────────────────────────────────── */
+#pop {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%) translateY(95px);
+  font-size:15px; color:#0f8; text-shadow:0 0 10px #0f8;
+  opacity:0; transition:opacity .35s; pointer-events:none;
+  text-align:center; white-space:nowrap;
+}
+
+/* ── Overlays ────────────────────────────────────────────── */
+.overlay {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center; pointer-events:all;
+}
+.screen {
+  background:rgba(0,0,0,.92); border:1px solid #445; border-radius:10px;
+  padding:34px; text-align:center; color:#ccc; max-width:560px; width:95%;
+}
+.screen h1 { font-size:26px; color:#fa0; text-shadow:0 0 18px #fa0; margin-bottom:6px; }
+
+/* ── Level cards ─────────────────────────────────────────── */
+.lv-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:18px 0; }
+.lv-card {
+  border:2px solid #334; border-radius:8px; padding:16px 10px;
+  cursor:pointer; transition:border-color .2s,background .2s;
+}
+.lv-card:hover { border-color:#fa0; background:rgba(255,170,0,.05); }
+.lv-card h2    { font-size:26px; margin-bottom:3px; }
+.lv-name       { font-size:14px; margin-bottom:8px; font-weight:bold; }
+.lv-info       { font-size:11px; color:#666; text-align:left; line-height:1.8; }
+.lv-1 h2, .lv-1 .lv-name { color:#4caf50; }
+.lv-2 h2, .lv-2 .lv-name { color:#ff9800; }
+.lv-3 h2, .lv-3 .lv-name { color:#f44336; }
+
+.goal {
+  background:rgba(255,170,0,.07); border:1px solid #fa05;
+  border-radius:6px; padding:8px 12px; margin:10px 0; font-size:12px; color:#fa0;
+}
+.cg {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:3px 18px; text-align:left; margin:10px 0 4px; font-size:12px; line-height:1.9; color:#777;
+}
+.cg .k { color:#fa0; }
+
+.btn {
+  background:#c97000; border:none; color:#fff;
+  padding:10px 26px; font-size:15px; border-radius:5px;
+  cursor:pointer; font-family:inherit; margin-top:8px;
+}
+.btn:hover { background:#a85e00; }
+
+#end-overlay { display:none; }
