@@ -4,7 +4,7 @@ A browser-based 3D first-person shooter where you navigate through a procedurall
 
 ## Preview
 
-![Maze Shooter 3D](https://raw.githubusercontent.com/your-username/maze-shooter/main/preview.png)
+![Maze Shooter 3D](http://github.com/alexITworks-as/Maze-Shooter/blob/main/a.png)
 
 > Open `index.html` in your browser — no build step or server required.
 
