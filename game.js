@@ -104,17 +104,42 @@ function setupMobileControls() {
   document.getElementById('touch-controls-hint').style.display = 'grid';
   document.getElementById('kb-controls').style.display = 'none';
 
+  const fireZone  = document.getElementById('fire-zone');
   const joyZone   = document.getElementById('joy-zone');
   const lookZone  = document.getElementById('look-zone');
   const joyBaseEl = document.getElementById('joy-base');
   const joyStick  = document.getElementById('joy-stick');
-  const btnFire   = document.getElementById('btn-fire-m');
   const btnReload = document.getElementById('btn-reload-m');
   const btnSprint = document.getElementById('btn-sprint-m');
 
   const JOY_R = 44;
 
-  // ── JOYSTICK (left zone) ─────────────────────────────────
+  // ── Dynamic sensitivity based on screen size ──────────────
+  // Small phones (height ≤ 420px) need higher sensitivity
+  function getLookSens() {
+    const h = window.innerHeight;
+    if (h <= 320) return 3.2;
+    if (h <= 420) return 2.8;
+    if (h <= 560) return 2.2;
+    return 1.6;
+  }
+
+  // ── FIRE ZONE (left top) — tap anywhere = shoot ───────────
+  fireZone.addEventListener('touchstart', e => {
+    e.preventDefault();
+    shoot();
+  }, { passive: false });
+  // Auto-fire while holding
+  let fireInterval = null;
+  fireZone.addEventListener('touchstart', e => {
+    clearInterval(fireInterval);
+    fireInterval = setInterval(() => { if (running && !over) shoot(); }, 150);
+  }, { passive: false });
+  const stopFire = () => { clearInterval(fireInterval); fireInterval = null; };
+  fireZone.addEventListener('touchend',   stopFire, { passive: false });
+  fireZone.addEventListener('touchcancel', stopFire, { passive: false });
+
+  // ── JOYSTICK zone (left bottom) ───────────────────────────
   joyZone.addEventListener('touchstart', e => {
     e.preventDefault();
     const t = e.changedTouches[0];
@@ -152,11 +177,10 @@ function setupMobileControls() {
   joyZone.addEventListener('touchend',   endJoy, { passive: false });
   joyZone.addEventListener('touchcancel', endJoy, { passive: false });
 
-  // ── LOOK / AIM ZONE (right side, behind buttons) ─────────
+  // ── LOOK / AIM zone (right side — swipe to aim) ───────────
   lookZone.addEventListener('touchstart', e => {
     e.preventDefault();
     for (const t of e.changedTouches) {
-      // Ignore touches that land on action buttons
       if (e.target !== lookZone) continue;
       if (lookId !== -1) continue;
       lookId = t.identifier;
@@ -168,10 +192,11 @@ function setupMobileControls() {
 
   lookZone.addEventListener('touchmove', e => {
     e.preventDefault();
+    const sens = getLookSens();
     for (const t of e.changedTouches) {
       if (t.identifier !== lookId) continue;
-      mdx += (t.clientX - lookPrev.x) * 1.4;
-      mdy += (t.clientY - lookPrev.y) * 1.4;
+      mdx += (t.clientX - lookPrev.x) * sens;
+      mdy += (t.clientY - lookPrev.y) * sens;
       lookPrev = { x: t.clientX, y: t.clientY };
     }
   }, { passive: false });
@@ -181,39 +206,21 @@ function setupMobileControls() {
       if (t.identifier !== lookId) continue;
       lookId = -1;
       const moved = Math.hypot(t.clientX - lookTapX, t.clientY - lookTapY);
-      if (moved < 14 && Date.now() - lookTapStart < 220) shoot();
+      if (moved < 12 && Date.now() - lookTapStart < 200) shoot();
     }
   };
   lookZone.addEventListener('touchend',   endLook, { passive: false });
   lookZone.addEventListener('touchcancel', endLook, { passive: false });
 
-  // ── FIRE BUTTON (dedicated, Standoff 2 style) ─────────────
-  btnFire.addEventListener('touchstart', e => {
-    e.preventDefault();
-    e.stopPropagation();
-    shoot();
-  }, { passive: false });
-  // Allow holding for auto-fire feel (repeat every 150ms while held)
-  let fireInterval = null;
-  btnFire.addEventListener('touchstart', e => {
-    if (fireInterval) clearInterval(fireInterval);
-    fireInterval = setInterval(() => { if (running && !over) shoot(); }, 150);
-  }, { passive: false });
-  const stopFire = e => { clearInterval(fireInterval); fireInterval = null; };
-  btnFire.addEventListener('touchend',   stopFire, { passive: false });
-  btnFire.addEventListener('touchcancel', stopFire, { passive: false });
-
-  // ── RELOAD BUTTON ─────────────────────────────────────────
+  // ── RELOAD ────────────────────────────────────────────────
   btnReload.addEventListener('touchstart', e => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     if (running && !over) { ammo = lvCfg.AMMO; updateAmmo(); }
   }, { passive: false });
 
   // ── SPRINT TOGGLE ─────────────────────────────────────────
   btnSprint.addEventListener('touchstart', e => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     tInput.sprint = !tInput.sprint;
     btnSprint.classList.toggle('active', tInput.sprint);
   }, { passive: false });
@@ -747,9 +754,9 @@ function movePlayer(dt) {
     slideMove(cam.position, (cos * mx + sin * mz) * spd, (-sin * mx + cos * mz) * spd, 0.32);
   }
 
-  yaw   -= mdx * 0.002;
+  yaw -= mdx * 0.002;
   pitch -= mdy * 0.002;
-  pitch  = Math.max(-1.05, Math.min(1.05, pitch));
+  pitch = Math.max(-1.05, Math.min(1.05, pitch));
   mdx = mdy = 0;
 
   cam.rotation.order = 'YXZ';
