@@ -12,31 +12,31 @@
 
 <!-- HUD -->
 <div id="hud">
-<div class="panel">
-  HP: <strong id="hp-val">100</strong>
-  <div id="hp-bar-wrap"><div id="hp-bar" style="width:100%"></div></div>
-</div>
-<div class="panel" style="text-align:center;min-width:160px">
-  <div id="lv-badge" style="font-size:11px;color:#666;margin-bottom:2px"></div>
-  <strong id="obj-text" style="font-size:13px;color:#fa0">&#9876; Знищ ворогів!</strong><br>
-  <span style="font-size:11px;color:#888">Вороги: <span id="ec">?</span> &nbsp;|&nbsp; Вбито: <span id="kc">0</span></span>
-</div>
-<div class="panel" style="text-align:right">
-  &#128299; <strong id="ammo-val">— / ∞</strong><br>
-  <span style="font-size:11px;color:#666">[R] перезарядка</span>
-</div>
+  <div class="panel">
+    HP: <strong id="hp-val">100</strong>
+    <div id="hp-bar-wrap"><div id="hp-bar" style="width:100%"></div></div>
+  </div>
+  <div class="panel" style="text-align:center;min-width:160px">
+    <div id="lv-badge" style="font-size:11px;color:#666;margin-bottom:2px"></div>
+    <strong id="obj-text" style="font-size:13px;color:#fa0">&#9876; Знищ ворогів!</strong><br>
+    <span style="font-size:11px;color:#888">Вороги: <span id="ec">?</span> &nbsp;|&nbsp; Вбито: <span id="kc">0</span></span>
+  </div>
+  <div class="panel" style="text-align:right">
+    &#128299; <strong id="ammo-val">— / ∞</strong><br>
+    <span style="font-size:11px;color:#666">[R] перезарядка</span>
+  </div>
 </div>
 
 <!-- Tasks -->
 <div id="tasks-panel">
-<h3>&#128203; Завдання</h3>
-<div id="tasks-list"></div>
+  <h3>&#128203; Завдання</h3>
+  <div id="tasks-list"></div>
 </div>
 
 <!-- Speed-kill bar -->
 <div id="speed-wrap">
-<div id="speed-label">&#9889;</div>
-<div id="speed-track"><div id="speed-fill" style="width:0%"></div></div>
+  <div id="speed-label">&#9889;</div>
+  <div id="speed-track"><div id="speed-fill" style="width:0%"></div></div>
 </div>
 
 <div id="xhair"></div>
@@ -44,87 +44,89 @@
 <div id="pop"></div>
 
 <div id="minimap">
-<canvas id="mm" width="170" height="170"></canvas>
+  <canvas id="mm" width="170" height="170"></canvas>
 </div>
-<div id="mm-legend">&#11036; Ти &nbsp;&#129olean; Вороги &nbsp;&#129001; Вихід</div>
+<div id="mm-legend">&#11036; Ти &nbsp;&#128308; Вороги &nbsp;&#129001; Вихід</div>
 
 <!-- Start / Level select -->
 <div class="overlay" id="start-overlay">
-<div class="screen">
-  <h1>&#9876; MAZE SHOOTER 3D</h1>
-  <p style="color:#888;font-size:13px;margin-bottom:4px">Знищ ворогів — виконай завдання — знайди вихід</p>
-  <div class="goal">&#127919; Виконай усі завдання рівня, потім знайди <strong style="color:#0f8">зелений портал</strong></div>
+  <div class="screen">
+    <h1>&#9876; MAZE SHOOTER 3D</h1>
+    <p style="color:#888;font-size:13px;margin-bottom:4px">Знищ ворогів — виконай завдання — знайди вихід</p>
+    <div class="goal">&#127919; Виконай усі завдання рівня, потім знайди <strong style="color:#0f8">зелений портал</strong></div>
 
-  <div class="lv-grid">
-    <div class="lv-card lv-1" onclick="startGame(1)">
-      <h2>1</h2>
-      <div class="lv-name">Легкий</div>
-      <div class="lv-info">&#128506; Малий лабіринт<br>&#128126; 6 ворогів<br>&#10084; 150 HP<br>&#128203; 3 завдання<br>&#128161; Яскраво</div>
+    <div class="lv-grid">
+      <div class="lv-card lv-1" onclick="startGame(1)">
+        <h2>1</h2>
+        <div class="lv-name">Легкий</div>
+        <div class="lv-info">&#128506; Малий лабіринт<br>&#128126; 6 ворогів<br>&#10084; 150 HP<br>&#128203; 3 завдання<br>&#128161; Яскраво</div>
+      </div>
+      <div class="lv-card lv-2" onclick="startGame(2)">
+        <h2>2</h2>
+        <div class="lv-name">Середній</div>
+        <div class="lv-info">&#128506; Середній лабіринт<br>&#128126; 11 + Ватажок &#128081;<br>&#10084; 100 HP<br>&#128203; 5 завдань<br>&#127787; Туман</div>
+      </div>
+      <div class="lv-card lv-3" onclick="startGame(3)">
+        <h2>3</h2>
+        <div class="lv-name">Важкий</div>
+        <div class="lv-info">&#128506; Великий лабіринт<br>&#128126; 17 + Бос &#128128;<br>&#10084; 75 HP<br>&#128203; 5 завдань<br>&#127761; Темрява</div>
+      </div>
     </div>
-    <div class="lv-card lv-2" onclick="startGame(2)">
-      <h2>2</h2>
-      <div class="lv-name">Середній</div>
-      <div class="lv-info">&#128506; Середній лабіринт<br>&#128126; 11 + Ватажок &#128081;<br>&#10084; 100 HP<br>&#128203; 5 завдань<br>&#127787; Туман</div>
-    </div>
-    <div class="lv-card lv-3" onclick="startGame(3)">
-      <h2>3</h2>
-      <div class="lv-name">Важкий</div>
-      <div class="lv-info">&#128506; Великий лабіринт<br>&#128126; 17 + Бос &#128128;<br>&#10084; 75 HP<br>&#128203; 5 завдань<br>&#127761; Темрява</div>
-    </div>
-  </div>
 
-  <div class="cg" id="kb-controls">
-    <div><span class="k">W A S D</span> — рух</div>
-    <div><span class="k">Миша</span> — огляд</div>
-    <div><span class="k">ЛКМ / Пробіл</span> — стріляти</div>
-    <div><span class="k">R</span> — перезарядити</div>
-    <div><span class="k">Shift</span> — бігти швидше</div>
-    <div><span class="k">Мінікарта</span> — внизу праворуч</div>
+    <div class="cg" id="kb-controls">
+      <div><span class="k">W A S D</span> — рух</div>
+      <div><span class="k">Миша</span> — огляд</div>
+      <div><span class="k">ЛКМ / Пробіл</span> — стріляти</div>
+      <div><span class="k">R</span> — перезарядити</div>
+      <div><span class="k">Shift</span> — бігти швидше</div>
+      <div><span class="k">Мінікарта</span> — внизу праворуч</div>
+    </div>
+    <div class="cg" id="touch-controls-hint" style="display:none">
+      <div><span class="k">&#128308; Ліво верх</span> — вогонь (тап)</div>
+      <div><span class="k">&#129664; Ліво низ</span> — рух (джойстик)</div>
+      <div><span class="k">&#128073; Право</span> — прицілювання</div>
+      <div><span class="k">&#128260;</span> — перезарядити</div>
+      <div><span class="k">&#9889;</span> — спринт (перемик.)</div>
+      <div><span class="k">Мінікарта</span> — внизу праворуч</div>
+    </div>
   </div>
-  <div class="cg" id="touch-controls-hint" style="display:none">
-    <div><span class="k">Ліво</span> — джойстик руху</div>
-    <div><span class="k">Право</span> — огляд / тап = стріл</div>
-    <div><span class="k">&#128308;</span> — вогонь (кнопка)</div>
-    <div><span class="k">&#128260;</span> — перезарядити</div>
-    <div><span class="k">&#9889;</span> — спринт (перемик.)</div>
-    <div><span class="k">Мінікарта</span> — внизу праворуч</div>
-  </div>
-</div>
 </div>
 
 <!-- End screen -->
 <div class="overlay" id="end-overlay">
-<div class="screen">
-  <h1 id="end-title"></h1>
-  <p id="end-sub" style="font-size:16px;margin:10px 0 4px"></p>
-  <p id="end-stats" style="font-size:13px;color:#777;margin-bottom:3px"></p>
-  <p id="end-tasks" style="font-size:12px;color:#555;margin-bottom:16px"></p>
-  <button class="btn" onclick="location.reload()">&#128260; Вибрати рівень</button>
-</div>
+  <div class="screen">
+    <h1 id="end-title"></h1>
+    <p id="end-sub" style="font-size:16px;margin:10px 0 4px"></p>
+    <p id="end-stats" style="font-size:13px;color:#777;margin-bottom:3px"></p>
+    <p id="end-tasks" style="font-size:12px;color:#555;margin-bottom:16px"></p>
+    <button class="btn" onclick="location.reload()">&#128260; Вибрати рівень</button>
+  </div>
 </div>
 
 <!-- Rotate device prompt (portrait + touch only) -->
 <div id="rotate-prompt">
-<div id="rotate-inner">
-  <div id="rotate-icon">&#128241;</div>
-  <div id="rotate-text">Поверни телефон<br>горизонтально</div>
-</div>
+  <div id="rotate-inner">
+    <div id="rotate-icon">&#128241;</div>
+    <div id="rotate-text">Поверни телефон<br>горизонтально</div>
+  </div>
 </div>
 
-<!-- Mobile touch controls — Standoff 2 style layout -->
-<!-- Shown only on touch devices via JS -->
+<!-- Mobile touch controls — new layout:
+     Left top  = fire zone (tap = shoot)
+     Left bot  = joystick movement
+     Right     = look/aim (swipe)
+     Right bot = reload + sprint buttons -->
 <div id="mobile-controls" style="display:none">
-  <!-- LEFT ZONE: floating joystick -->
+  <!-- FIRE zone: left top — tap anywhere here to shoot -->
+  <div id="fire-zone"></div>
+
+  <!-- JOYSTICK zone: left bottom -->
   <div id="joy-zone"></div>
   <div id="joy-base"><div id="joy-stick"></div></div>
 
-  <!-- RIGHT ZONE: look / aim area + action buttons -->
+  <!-- LOOK / AIM zone: full right side + action buttons -->
   <div id="look-zone">
-    <!-- FIRE button — large, bottom-right -->
-    <button id="btn-fire-m"   class="m-btn">&#128308;</button>
-    <!-- RELOAD button — above fire -->
     <button id="btn-reload-m" class="m-btn">&#128260;</button>
-    <!-- SPRINT toggle — left of fire -->
     <button id="btn-sprint-m" class="m-btn">&#9889;</button>
   </div>
 </div>
