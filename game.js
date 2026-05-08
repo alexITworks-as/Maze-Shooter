@@ -104,15 +104,17 @@ function setupMobileControls() {
   document.getElementById('touch-controls-hint').style.display = 'grid';
   document.getElementById('kb-controls').style.display = 'none';
 
-  const joyZone  = document.getElementById('joy-zone');
-  const lookZone = document.getElementById('look-zone');
+  const joyZone   = document.getElementById('joy-zone');
+  const lookZone  = document.getElementById('look-zone');
   const joyBaseEl = document.getElementById('joy-base');
   const joyStick  = document.getElementById('joy-stick');
+  const btnFire   = document.getElementById('btn-fire-m');
   const btnReload = document.getElementById('btn-reload-m');
   const btnSprint = document.getElementById('btn-sprint-m');
 
-  const JOY_R = 40;
+  const JOY_R = 44;
 
+  // ── JOYSTICK (left zone) ─────────────────────────────────
   joyZone.addEventListener('touchstart', e => {
     e.preventDefault();
     const t = e.changedTouches[0];
@@ -147,17 +149,21 @@ function setupMobileControls() {
       joyStick.style.transform = 'translate(-50%,-50%)';
     }
   };
-  joyZone.addEventListener('touchend',    endJoy, { passive: false });
+  joyZone.addEventListener('touchend',   endJoy, { passive: false });
   joyZone.addEventListener('touchcancel', endJoy, { passive: false });
 
+  // ── LOOK / AIM ZONE (right side, behind buttons) ─────────
   lookZone.addEventListener('touchstart', e => {
     e.preventDefault();
-    const t = e.changedTouches[0];
-    if (lookId !== -1) return;
-    lookId = t.identifier;
-    lookPrev    = { x: t.clientX, y: t.clientY };
-    lookTapStart = Date.now();
-    lookTapX = t.clientX; lookTapY = t.clientY;
+    for (const t of e.changedTouches) {
+      // Ignore touches that land on action buttons
+      if (e.target !== lookZone) continue;
+      if (lookId !== -1) continue;
+      lookId = t.identifier;
+      lookPrev   = { x: t.clientX, y: t.clientY };
+      lookTapStart = Date.now();
+      lookTapX = t.clientX; lookTapY = t.clientY;
+    }
   }, { passive: false });
 
   lookZone.addEventListener('touchmove', e => {
@@ -178,16 +184,36 @@ function setupMobileControls() {
       if (moved < 14 && Date.now() - lookTapStart < 220) shoot();
     }
   };
-  lookZone.addEventListener('touchend',    endLook, { passive: false });
+  lookZone.addEventListener('touchend',   endLook, { passive: false });
   lookZone.addEventListener('touchcancel', endLook, { passive: false });
 
+  // ── FIRE BUTTON (dedicated, Standoff 2 style) ─────────────
+  btnFire.addEventListener('touchstart', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    shoot();
+  }, { passive: false });
+  // Allow holding for auto-fire feel (repeat every 150ms while held)
+  let fireInterval = null;
+  btnFire.addEventListener('touchstart', e => {
+    if (fireInterval) clearInterval(fireInterval);
+    fireInterval = setInterval(() => { if (running && !over) shoot(); }, 150);
+  }, { passive: false });
+  const stopFire = e => { clearInterval(fireInterval); fireInterval = null; };
+  btnFire.addEventListener('touchend',   stopFire, { passive: false });
+  btnFire.addEventListener('touchcancel', stopFire, { passive: false });
+
+  // ── RELOAD BUTTON ─────────────────────────────────────────
   btnReload.addEventListener('touchstart', e => {
     e.preventDefault();
+    e.stopPropagation();
     if (running && !over) { ammo = lvCfg.AMMO; updateAmmo(); }
   }, { passive: false });
 
+  // ── SPRINT TOGGLE ─────────────────────────────────────────
   btnSprint.addEventListener('touchstart', e => {
     e.preventDefault();
+    e.stopPropagation();
     tInput.sprint = !tInput.sprint;
     btnSprint.classList.toggle('active', tInput.sprint);
   }, { passive: false });
