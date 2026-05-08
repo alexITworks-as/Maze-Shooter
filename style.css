@@ -13,7 +13,7 @@ canvas { display:block; }
   padding:8px 14px; border-radius:6px; color:#ccc; font-size:13px;
 }
 #hp-bar-wrap { width:130px; height:7px; background:#222; border-radius:3px; margin-top:5px; }
-#hp-bar      { height:100%; background:#0f0; border-radius:3px; transition:width .12s,background .12s; }
+#hp-bar { height:100%; background:#0f0; border-radius:3px; transition:width .12s,background .12s; }
 
 /* ── Tasks panel ─────────────────────────────────────────── */
 #tasks-panel {
@@ -25,10 +25,10 @@ canvas { display:block; }
   font-size:11px; color:#666; margin-bottom:8px;
   letter-spacing:1px; text-transform:uppercase;
 }
-.task-item  { display:flex; align-items:flex-start; gap:6px; font-size:12px; line-height:1.5; margin-bottom:5px; }
-.task-icon  { flex-shrink:0; width:16px; font-size:13px; }
+.task-item { display:flex; align-items:flex-start; gap:6px; font-size:12px; line-height:1.5; margin-bottom:5px; }
+.task-icon { flex-shrink:0; width:16px; font-size:13px; }
 .task-item.active .task-text { color:#fa0; font-weight:bold; }
-.task-item.done   .task-text { color:#4a8; text-decoration:line-through; }
+.task-item.done .task-text { color:#4a8; text-decoration:line-through; }
 .task-item.locked .task-text { color:#333; }
 
 /* ── Speed-kill bar ──────────────────────────────────────── */
@@ -39,17 +39,17 @@ canvas { display:block; }
 }
 #speed-label { font-size:13px; color:#fa0; margin-bottom:4px; }
 #speed-track { width:220px; height:7px; background:#222; border-radius:3px; margin:0 auto; }
-#speed-fill  { height:100%; background:#fa0; border-radius:3px; transition:width .1s; }
+#speed-fill { height:100%; background:#fa0; border-radius:3px; transition:width .1s; }
 
 /* ── Crosshair ───────────────────────────────────────────── */
 #xhair { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
 #xhair::before,
-#xhair::after  { content:''; position:absolute; background:rgba(255,255,255,.85); }
+#xhair::after { content:''; position:absolute; background:rgba(255,255,255,.85); }
 #xhair::before { width:2px; height:20px; top:-10px; left:-1px; }
-#xhair::after  { width:20px; height:2px; top:-1px; left:-10px; }
+#xhair::after { width:20px; height:2px; top:-1px; left:-10px; }
 
 /* ── Minimap ─────────────────────────────────────────────── */
-#minimap   { position:absolute; bottom:14px; right:14px; border:1px solid #445; border-radius:5px; overflow:hidden; }
+#minimap { position:absolute; bottom:14px; right:14px; border:1px solid #445; border-radius:5px; overflow:hidden; }
 #mm-legend { position:absolute; bottom:182px; right:14px; font-size:10px; color:#666; text-align:right; }
 
 /* ── Damage flash ────────────────────────────────────────── */
@@ -82,9 +82,9 @@ canvas { display:block; }
   cursor:pointer; transition:border-color .2s,background .2s;
 }
 .lv-card:hover { border-color:#fa0; background:rgba(255,170,0,.05); }
-.lv-card h2    { font-size:26px; margin-bottom:3px; }
-.lv-name       { font-size:14px; margin-bottom:8px; font-weight:bold; }
-.lv-info       { font-size:11px; color:#666; text-align:left; line-height:1.8; }
+.lv-card h2 { font-size:26px; margin-bottom:3px; }
+.lv-name { font-size:14px; margin-bottom:8px; font-weight:bold; }
+.lv-info { font-size:11px; color:#666; text-align:left; line-height:1.8; }
 .lv-1 h2, .lv-1 .lv-name { color:#4caf50; }
 .lv-2 h2, .lv-2 .lv-name { color:#ff9800; }
 .lv-3 h2, .lv-3 .lv-name { color:#f44336; }
@@ -117,126 +117,208 @@ canvas { display:block; }
   pointer-events: all;
 }
 #rotate-prompt.show { display: flex; }
-
-#rotate-inner {
-  text-align: center;
-}
-
+#rotate-inner { text-align: center; }
 #rotate-icon {
   font-size: 72px;
   animation: rotate-anim 1.4s ease-in-out infinite;
-  display: block;
-  margin-bottom: 20px;
+  display: block; margin-bottom: 20px;
   filter: drop-shadow(0 0 18px rgba(255,170,0,.6));
 }
-
 @keyframes rotate-anim {
   0%   { transform: rotate(0deg); }
   40%  { transform: rotate(90deg); }
   60%  { transform: rotate(90deg); }
   100% { transform: rotate(90deg) scale(1.08); opacity:.7; }
 }
-
 #rotate-text {
   font-family: 'Courier New', monospace;
-  font-size: 20px;
-  color: #fa0;
-  text-shadow: 0 0 14px #fa08;
-  line-height: 1.6;
+  font-size: 20px; color: #fa0;
+  text-shadow: 0 0 14px #fa08; line-height: 1.6;
 }
 
-/* ── Mobile touch controls ───────────────────────────────── */
+/* ══════════════════════════════════════════════════════════
+   MOBILE TOUCH CONTROLS — Standoff 2 style layout
+   ══════════════════════════════════════════════════════════ */
 #mobile-controls {
   position: absolute; inset: 0;
   pointer-events: none;
 }
 
+/* LEFT: joystick zone - bottom-left 40% wide, 65% tall */
 #joy-zone {
   position: absolute;
   left: 0; bottom: 0;
-  width: 45%; height: 50%;
+  width: 42%; height: 65%;
   pointer-events: all;
 }
 
+/* RIGHT: look + action buttons zone */
 #look-zone {
   position: absolute;
   right: 0; bottom: 0;
-  width: 55%; height: 55%;
+  width: 58%; height: 100%;
   pointer-events: all;
 }
 
+/* Joystick base ring */
 #joy-base {
   position: absolute;
-  width: 90px; height: 90px;
+  width: 110px; height: 110px;
   border-radius: 50%;
-  background: rgba(255,255,255,.12);
-  border: 2px solid rgba(255,255,255,.3);
+  background: rgba(255,255,255,.08);
+  border: 2px solid rgba(255,255,255,.25);
   display: none;
   pointer-events: none;
   transform: translate(-50%, -50%);
+  box-shadow: 0 0 24px rgba(255,170,0,.12);
 }
 
+/* Joystick thumb */
 #joy-stick {
   position: absolute;
   top: 50%; left: 50%;
-  width: 42px; height: 42px;
+  width: 50px; height: 50px;
   border-radius: 50%;
-  background: rgba(255,200,0,.55);
-  border: 2px solid rgba(255,200,0,.8);
+  background: radial-gradient(circle at 35% 35%, rgba(255,220,80,.9), rgba(200,130,0,.75));
+  border: 2px solid rgba(255,200,0,.95);
   transform: translate(-50%, -50%);
   transition: none;
+  box-shadow: 0 0 12px rgba(255,170,0,.55);
 }
 
-/* Action buttons in the look zone */
+/* ── Action buttons ──────────────────────────────────────── */
 .m-btn {
   position: absolute;
-  width: 58px; height: 58px;
   border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.35);
+  border: 2px solid rgba(255,255,255,.30);
   background: rgba(0,0,0,.55);
   color: #fff;
-  font-size: 20px;
   cursor: pointer;
   pointer-events: all;
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
   display: flex; align-items: center; justify-content: center;
   font-family: inherit;
-  transition: background .1s;
+  transition: background .1s, transform .08s;
+  user-select: none;
 }
-.m-btn:active { background: rgba(255,200,0,.35); }
+.m-btn:active { transform: scale(.91); }
 
-#btn-reload-m { bottom: 28px; right: 28px; }
-#btn-sprint-m { bottom: 100px; right: 28px; font-size: 16px; }
-#btn-sprint-m.active { background: rgba(255,200,0,.5); color:#000; border-color:#fa0; }
+/* FIRE — large orange, bottom-right (Standoff 2 style) */
+#btn-fire-m {
+  width: 80px; height: 80px; font-size: 28px;
+  bottom: 24px; right: 24px;
+  background: rgba(200,80,0,.72);
+  border-color: rgba(255,120,0,.75);
+  box-shadow: 0 0 22px rgba(255,100,0,.40), inset 0 0 8px rgba(255,150,50,.15);
+}
+#btn-fire-m:active { background: rgba(255,130,0,.9); }
 
-/* Tap-to-shoot ripple hint */
+/* RELOAD — blue, above fire */
+#btn-reload-m {
+  width: 60px; height: 60px; font-size: 22px;
+  bottom: 124px; right: 32px;
+  background: rgba(0,70,170,.65);
+  border-color: rgba(60,140,255,.65);
+  box-shadow: 0 0 14px rgba(60,140,255,.30);
+}
+
+/* SPRINT — left of fire */
+#btn-sprint-m {
+  width: 60px; height: 60px; font-size: 18px;
+  bottom: 24px; right: 118px;
+  background: rgba(30,30,30,.65);
+  border-color: rgba(255,255,255,.22);
+}
+#btn-sprint-m.active {
+  background: rgba(255,200,0,.58);
+  border-color: #fa0; color: #000;
+  box-shadow: 0 0 16px rgba(255,200,0,.55);
+}
+
+/* Tap-to-aim hint label */
 #look-zone::after {
-  content: '👆 тап = постріл';
+  content: 'tap = shoot';
   position: absolute;
   top: 14px; right: 14px;
-  font-size: 10px; color: rgba(255,255,255,.25);
+  font-size: 10px; color: rgba(255,255,255,.20);
   pointer-events: none;
+  font-family: 'Courier New', monospace;
 }
 
-/* ── Responsive HUD for small screens ───────────────────── */
-@media (max-width: 600px) {
-  #hud { top: 6px; left: 6px; right: 6px; gap: 5px; }
-  .panel { padding: 5px 8px; font-size: 11px; }
-  #hp-bar-wrap { width: 90px; }
-  #tasks-panel { left: 6px; top: 64px; width: 175px; font-size: 11px; }
-  #minimap { bottom: 8px; right: 8px; }
-  #mm { width: 120px !important; height: 120px !important; }
-  #mm-legend { bottom: 136px; right: 8px; font-size: 9px; }
-  .screen { padding: 18px 14px; }
-  .screen h1 { font-size: 20px; }
-  .lv-grid { grid-template-columns: repeat(3, 1fr); gap: 7px; }
-  .lv-card { padding: 10px 6px; }
-  .lv-card h2 { font-size: 20px; }
-  .lv-info { font-size: 9px; }
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE — landscape phones & tablets
+   ══════════════════════════════════════════════════════════ */
+
+/* Landscape phones (height < 500px typical) */
+@media (max-height: 500px) and (orientation: landscape) {
+  #hud { top:4px; left:4px; right:4px; gap:4px; }
+  .panel { padding:3px 7px; font-size:9px; }
+  #hp-bar-wrap { width:70px; height:5px; }
+
+  #tasks-panel { display:none; }
+
+  #minimap { bottom:6px; right:192px; }
+  #mm { width:85px !important; height:85px !important; }
+  #mm-legend { display:none; }
+
+  #btn-fire-m   { width:68px; height:68px; font-size:23px; bottom:14px; right:14px; }
+  #btn-reload-m { width:52px; height:52px; font-size:18px; bottom:96px;  right:20px; }
+  #btn-sprint-m { width:52px; height:52px; font-size:15px; bottom:14px;  right:96px; }
 }
 
-@media (max-width: 400px) {
-  .lv-info { display: none; }
-  .lv-card { padding: 8px 4px; }
+/* Mid-size landscape (500-700px height — small tablets, big phones) */
+@media (min-height: 500px) and (max-height: 700px) and (orientation: landscape) {
+  #hud { top:6px; left:6px; right:6px; gap:5px; }
+  .panel { padding:5px 9px; font-size:11px; }
+  #hp-bar-wrap { width:90px; height:6px; }
+
+  #tasks-panel { left:6px; top:58px; width:170px; padding:7px 9px; }
+  #tasks-panel h3 { font-size:9px; }
+  .task-item { font-size:10px; }
+
+  #minimap { bottom:8px; right:200px; }
+  #mm { width:100px !important; height:100px !important; }
+  #mm-legend { bottom:116px; right:200px; font-size:9px; }
+}
+
+/* Tablet landscape (height > 700px) */
+@media (min-height: 700px) and (orientation: landscape) and (max-width: 1200px) {
+  #minimap { bottom:10px; right:210px; }
+  #mm { width:130px !important; height:130px !important; }
+  #mm-legend { bottom:148px; right:210px; }
+
+  #btn-fire-m   { width:90px; height:90px; font-size:32px; bottom:28px; right:28px; }
+  #btn-reload-m { width:68px; height:68px; font-size:26px; bottom:134px; right:36px; }
+  #btn-sprint-m { width:68px; height:68px; font-size:22px; bottom:28px; right:132px; }
+}
+
+/* Portrait — hide everything, show rotate prompt */
+@media (orientation: portrait) and (max-width: 1024px) {
+  #mobile-controls { display:none !important; }
+  #hud            { display:none !important; }
+  #tasks-panel    { display:none !important; }
+  #minimap        { display:none !important; }
+  #mm-legend      { display:none !important; }
+  #speed-wrap     { display:none !important; }
+}
+
+/* Start / end screen for mobile landscape */
+@media (max-height: 600px) and (orientation: landscape) {
+  .screen { padding:12px 14px; max-height:90vh; overflow-y:auto; }
+  .screen h1 { font-size:17px; margin-bottom:3px; }
+  .lv-grid { gap:6px; margin:8px 0; }
+  .lv-card { padding:7px 5px; }
+  .lv-card h2 { font-size:17px; }
+  .lv-info { font-size:8px; line-height:1.5; }
+  .goal { font-size:10px; padding:4px 7px; margin:5px 0; }
+  .cg { font-size:10px; line-height:1.7; }
+  .btn { padding:7px 18px; font-size:12px; margin-top:5px; }
+}
+
+@media (max-height: 420px) and (orientation: landscape) {
+  .lv-info { display:none; }
+  .goal { display:none; }
+  .screen { padding:8px 10px; }
+  .screen h1 { font-size:14px; }
 }
